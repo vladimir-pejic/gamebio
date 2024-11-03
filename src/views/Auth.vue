@@ -89,18 +89,11 @@ if (user.value) {
 <style scoped>
 .auth-container {
   min-height: 100vh;
-  width: 100%;
-  background: linear-gradient(135deg, #13151a 0%, #1f2937 100%);
+  background: var(--gradient-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  padding: 20px;
 }
 
 .auth-content {
@@ -135,12 +128,12 @@ if (user.value) {
 }
 
 .logo-text {
+  font-family: var(--font-family);
   font-size: 3.5rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--color-text);
   letter-spacing: 2px;
   text-transform: uppercase;
-  font-family: 'Inter', sans-serif;
 }
 
 .highlight {
@@ -254,8 +247,6 @@ if (user.value) {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  max-width: 400px;
-  margin: 24px auto 0;
 }
 
 .loading-spinner {
@@ -283,27 +274,6 @@ if (user.value) {
   }
 }
 
-/* Updated responsive design */
-@media (min-width: 1200px) {
-  .auth-content {
-    max-width: 1200px;
-  }
-
-  .auth-box {
-    padding: 64px;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1199px) {
-  .auth-content {
-    max-width: 900px;
-  }
-
-  .auth-box {
-    padding: 48px;
-  }
-}
-
 @media (max-width: 768px) {
   .auth-content {
     max-width: 90%;
@@ -311,11 +281,6 @@ if (user.value) {
 
   .auth-box {
     padding: 32px 24px;
-    max-width: 100%;
-  }
-
-  .auth-buttons {
-    max-width: 100%;
   }
 
   .logo-text {
@@ -329,10 +294,6 @@ if (user.value) {
   .auth-button {
     padding: 14px;
     font-size: 1rem;
-  }
-
-  .auth-buttons {
-    max-width: 100%;
   }
 }
 </style>

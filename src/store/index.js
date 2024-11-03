@@ -1,96 +1,44 @@
 import { createStore } from 'vuex'
-import createPersistedState from 'vuex-persistedstate'
-import { auth } from '@/firebase/config'
-import {
-  signInWithPopup,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
-  TwitterAuthProvider,
-  OAuthProvider,
-} from 'firebase/auth'
+import { dummyUser, dummyPosts, dummyMedia } from '@/data/dummyData'
 
 export default createStore({
-  plugins: [createPersistedState()],
   state: {
-    user: null,
-    posts: [],
+    user: dummyUser,
+    profileUser: dummyUser,
+    profilePosts: dummyPosts,
+    profileMedia: dummyMedia,
     postModalVisible: false,
-    loading: false,
-    error: null,
   },
   mutations: {
     setUser(state, user) {
       state.user = user
     },
-    setLoading(state, loading) {
-      state.loading = loading
+    setProfileUser(state, user) {
+      state.profileUser = user
     },
-    setError(state, error) {
-      state.error = error
+    setProfilePosts(state, posts) {
+      state.profilePosts = posts
     },
-    setCurrentUser(state, user) {
-      state.currentUser = user
-    },
-    addPost(state, post) {
-      state.posts.unshift(post)
+    setProfileMedia(state, media) {
+      state.profileMedia = media
     },
     setPostModalVisible(state, visible) {
       state.postModalVisible = visible
     },
-    toggleLike(state, postId) {
-      const post = state.posts.find(p => p.id === postId)
-      if (post) {
-        post.likes = post.liked ? post.likes - 1 : post.likes + 1
-        post.liked = !post.liked
-      }
-    },
   },
   actions: {
-    async signInWithProvider({ commit }, provider) {
-      commit('setLoading', true)
-      commit('setError', null)
-      try {
-        let authProvider
-        switch (provider) {
-          case 'google':
-            authProvider = new GoogleAuthProvider()
-            break
-          case 'facebook':
-            authProvider = new FacebookAuthProvider()
-            break
-          case 'twitter':
-            authProvider = new TwitterAuthProvider()
-            break
-          case 'twitch':
-            authProvider = new OAuthProvider('twitch.tv')
-            break
-          default:
-            throw new Error('Invalid provider')
-        }
-
-        const result = await signInWithPopup(auth, authProvider)
-        const user = {
-          id: result.user.uid,
-          name: result.user.displayName,
-          email: result.user.email,
-          avatar: result.user.photoURL,
-          provider: provider,
-        }
-        commit('setUser', user)
-      } catch (error) {
-        commit('setError', error.message)
-      } finally {
-        commit('setLoading', false)
-      }
+    signInWithProvider({ commit }, provider) {
+      // Simulate sign in for now
+      commit('setUser', dummyUser)
     },
-
+    async fetchProfile({ commit }, userId) {
+      // Simulate API call with dummy data
+      commit('setProfileUser', dummyUser)
+      commit('setProfilePosts', dummyPosts)
+      commit('setProfileMedia', dummyMedia)
+    },
     async signOut({ commit }) {
-      try {
-        await auth.signOut()
-        commit('setUser', null)
-      } catch (error) {
-        commit('setError', error.message)
-      }
+      commit('setUser', null)
     },
   },
 })

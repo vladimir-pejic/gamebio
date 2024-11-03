@@ -1,28 +1,55 @@
 <template>
-  <div class="home">
-    <div class="timeline">
-      <div class="timeline-header">
-        <h2>Home</h2>
+  <div class="home-container">
+    <div class="content-wrapper">
+      <div class="main-content">
+        <div class="create-post">
+          <img :src="user?.avatar" class="user-avatar" alt="Profile" />
+          <button @click="openPostModal" class="create-post-button">
+            What's on your mind?
+          </button>
+        </div>
+
+        <div class="posts-container">
+          <post-item
+            v-for="post in posts"
+            :key="post.id"
+            :post="post"
+            @like="likePost"
+            @share="sharePost"
+          />
+        </div>
       </div>
-      <post-item
-        v-for="post in posts"
-        :key="post.id"
-        :post="post"
-        @like="likePost"
-        @share="sharePost"
-      />
+
+      <div class="sidebar">
+        <div class="sidebar-card trending">
+          <h3>Trending Games</h3>
+          <div class="trending-list">
+            <div class="trending-item">
+              <span class="game-name">#Minecraft</span>
+              <span class="post-count">2.4k posts</span>
+            </div>
+            <div class="trending-item">
+              <span class="game-name">#Fortnite</span>
+              <span class="post-count">1.8k posts</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card suggested">
+          <h3>Suggested Players</h3>
+          <div class="suggested-list">
+            <div class="suggested-item">
+              <img :src="avatar" alt="User" class="suggested-avatar" />
+              <div class="suggested-info">
+                <span class="suggested-name">Player123</span>
+                <span class="suggested-game">Playing Valorant</span>
+              </div>
+              <button class="follow-button">Follow</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <aside class="sidebar">
-      <div class="sidebar-card">
-        <h3>Who to follow</h3>
-        <!-- Add suggested users here -->
-      </div>
-      <div class="sidebar-card">
-        <h3>Trending</h3>
-        <!-- Add trending topics here -->
-      </div>
-    </aside>
-    <post-modal v-if="postModalVisible" @close="closeModal" />
   </div>
 </template>
 
@@ -31,11 +58,20 @@ import { computed } from 'vue'
 import { useStore } from 'vuex'
 import PostItem from '@/components/PostItem.vue'
 import PostModal from '@/components/PostModal.vue'
+import avatar from '@/assets/avatar.svg'
 
 const store = useStore()
-
+const user = computed(() => store.state.user)
 const posts = computed(() => store.state.posts)
 const postModalVisible = computed(() => store.state.postModalVisible)
+
+const openPostModal = () => {
+  store.commit('setPostModalVisible', true)
+}
+
+const closePostModal = () => {
+  store.commit('setPostModalVisible', false)
+}
 
 const likePost = postId => {
   store.commit('toggleLike', postId)
@@ -44,64 +80,179 @@ const likePost = postId => {
 const sharePost = postId => {
   // Implement sharing functionality
 }
-
-const closeModal = () => {
-  store.commit('setPostModalVisible', false)
-}
 </script>
 
 <style scoped>
-.home {
+.home-container {
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+.content-wrapper {
+  max-width: 1265px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
+  grid-template-columns: minmax(600px, 2fr) 350px;
+  gap: 30px;
+  padding: 0;
+  min-height: 100vh;
 }
 
-@media (min-width: 768px) {
-  .home {
-    grid-template-columns: 2fr 1fr;
-  }
+.main-content {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 100vh;
 }
 
-.timeline {
-  background: white;
-  border-radius: 15px;
-  border: 1px solid #e1e8ed;
-  overflow: hidden;
+.create-post {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.timeline-header {
-  padding: 15px 20px;
-  border-bottom: 1px solid #e1e8ed;
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-.timeline-header h2 {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #14171a;
+.create-post-button {
+  flex: 1;
+  text-align: left;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: background-color 0.2s;
+}
+
+.create-post-button:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .sidebar {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .sidebar {
-    display: block;
-  }
+  padding: 16px 0;
+  position: sticky;
+  top: 76px;
+  height: calc(100vh - 76px);
+  overflow-y: auto;
 }
 
 .sidebar-card {
-  background: white;
-  border-radius: 15px;
-  border: 1px solid #e1e8ed;
-  padding: 15px;
-  margin-bottom: 20px;
+  background: var(--color-background-secondary);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
 }
 
 .sidebar-card h3 {
-  font-size: 1.1rem;
-  margin-bottom: 15px;
-  color: #14171a;
+  color: var(--color-text);
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+}
+
+.trending-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.trending-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.game-name {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.post-count {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.suggested-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.suggested-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.suggested-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.suggested-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.suggested-name {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.suggested-game {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.follow-button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.follow-button:hover {
+  background: var(--color-primary-hover);
+}
+
+@media (max-width: 1280px) {
+  .content-wrapper {
+    grid-template-columns: minmax(600px, 1fr) 350px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .content-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 688px) {
+  .content-wrapper {
+    max-width: 100%;
+  }
+
+  .main-content {
+    border-left: none;
+    border-right: none;
+  }
 }
 </style>
