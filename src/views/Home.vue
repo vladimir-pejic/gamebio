@@ -35,6 +35,8 @@
           </div>
         </div>
 
+        <suggested-media />
+
         <div class="sidebar-card suggested">
           <h3>Suggested Players</h3>
           <div class="suggested-list">
@@ -59,10 +61,11 @@ import { useStore } from 'vuex'
 import PostItem from '@/components/PostItem.vue'
 import PostModal from '@/components/PostModal.vue'
 import avatar from '@/assets/avatar.svg'
+import SuggestedMedia from '@/components/SuggestedMedia.vue'
 
 const store = useStore()
 const user = computed(() => store.state.user)
-const posts = computed(() => store.state.posts)
+const posts = computed(() => store.state.homePosts)
 const postModalVisible = computed(() => store.state.postModalVisible)
 
 const openPostModal = () => {

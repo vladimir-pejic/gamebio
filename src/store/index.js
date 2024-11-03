@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { dummyUser, dummyPosts, dummyMedia } from '@/data/dummyData'
+import { dummyUser, dummyPosts, dummyMedia, homePosts } from '@/data/dummyData'
 
 export default createStore({
   state: {
@@ -7,6 +7,7 @@ export default createStore({
     profileUser: dummyUser,
     profilePosts: dummyPosts,
     profileMedia: dummyMedia,
+    homePosts: homePosts,
     postModalVisible: false,
   },
   mutations: {
