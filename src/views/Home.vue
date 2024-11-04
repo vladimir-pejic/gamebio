@@ -141,8 +141,7 @@ const sharePost = postId => {
 }
 
 .main-content {
-  border-left: none;
-  border-right: none;
+  border: none;
   min-height: 100vh;
 }
 
@@ -151,7 +150,7 @@ const sharePost = postId => {
   gap: 12px;
   padding: 16px;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
 }
 
 .user-avatar {

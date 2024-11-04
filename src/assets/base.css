@@ -121,3 +121,31 @@ body {
   border-radius: var(--radius-lg);
   backdrop-filter: blur(10px);
 }
+
+/* Add this to your base.css or relevant CSS file */
+* {
+  box-sizing: border-box; /* Ensure consistent box model */
+  margin: 0; /* Reset default margins */
+  padding: 0; /* Reset default paddings */
+}
+
+body {
+  margin: 0; /* Remove body margin */
+}
+
+/* Navbar styles */
+.navbar {
+  position: sticky;
+  top: 0;
+  background: var(--color-background);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+/* Main container styles */
+.main-container {
+  min-height: calc(100vh - 60px); /* Adjust based on navbar height */
+  padding: 16px; /* Optional padding for content */
+  background: var(--color-background); /* Ensure background matches */
+}
