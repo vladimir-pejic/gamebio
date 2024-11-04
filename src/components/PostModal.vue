@@ -24,25 +24,24 @@
           <button class="remove-image" @click="removeImage">×</button>
         </div>
 
-        <div class="post-actions">
-          <div class="media-actions">
-            <label class="media-button">
-              <input
-                type="file"
-                accept="image/*"
-                @change="handleImageUpload"
-                class="hidden"
-              />
-              <i class="fas fa-image"></i>
-              Add Photo
-            </label>
-          </div>
+        <div class="modal-actions">
+          <label class="media-button button button-secondary">
+            <input
+              type="file"
+              accept="image/*"
+              @change="handleImageUpload"
+              class="hidden"
+            />
+            <ImagePlus />
+            Add Photo
+          </label>
 
           <button
             @click="createPost"
-            class="post-button"
+            class="post-button button button-primary"
             :disabled="!content && !imagePreview"
           >
+            <Send />
             Post
           </button>
         </div>
@@ -54,6 +53,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
+import { Image, ImagePlus, Send } from 'lucide-vue-next'
 
 const store = useStore()
 const content = ref('')
@@ -195,7 +195,7 @@ const createPost = () => {
   cursor: pointer;
 }
 
-.post-actions {
+.modal-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;

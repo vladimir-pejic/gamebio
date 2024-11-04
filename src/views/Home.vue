@@ -5,6 +5,7 @@
         <div class="create-post">
           <img :src="user?.avatar" class="user-avatar" alt="Profile" />
           <button @click="openPostModal" class="create-post-button">
+            <PenLine size="18" />
             What's on your mind?
           </button>
         </div>
@@ -40,13 +41,22 @@
         <div class="sidebar-card suggested">
           <h3>Suggested Players</h3>
           <div class="suggested-list">
-            <div class="suggested-item">
-              <img :src="avatar" alt="User" class="suggested-avatar" />
+            <div
+              class="suggested-item"
+              v-for="player in suggestedPlayers"
+              :key="player.id"
+            >
+              <img :src="player.avatar" alt="User" class="suggested-avatar" />
               <div class="suggested-info">
-                <span class="suggested-name">Player123</span>
-                <span class="suggested-game">Playing Valorant</span>
+                <span class="suggested-name">{{ player.displayName }}</span>
+                <span class="suggested-game"
+                  >Playing {{ player.currentGame }}</span
+                >
               </div>
-              <button class="follow-button">Follow</button>
+              <button class="button button-primary">
+                <UserPlus size="16" />
+                Follow
+              </button>
             </div>
           </div>
         </div>
@@ -56,17 +66,46 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import PostItem from '@/components/PostItem.vue'
 import PostModal from '@/components/PostModal.vue'
 import avatar from '@/assets/avatar.svg'
 import SuggestedMedia from '@/components/SuggestedMedia.vue'
+import { PenLine, UserPlus } from 'lucide-vue-next'
 
 const store = useStore()
 const user = computed(() => store.state.user)
 const posts = computed(() => store.state.homePosts)
 const postModalVisible = computed(() => store.state.postModalVisible)
+
+// Suggested players data
+const suggestedPlayers = ref([
+  {
+    id: 1,
+    displayName: 'ProGamer123',
+    currentGame: 'Valorant',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=progamer',
+  },
+  {
+    id: 2,
+    displayName: 'PixelQueen',
+    currentGame: 'Minecraft',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=pixel',
+  },
+  {
+    id: 3,
+    displayName: 'SpeedRunner',
+    currentGame: 'Portal 2',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=speed',
+  },
+  {
+    id: 4,
+    displayName: 'ESportsLegend',
+    currentGame: 'League of Legends',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=esports',
+  },
+])
 
 const openPostModal = () => {
   store.commit('setPostModalVisible', true)
@@ -102,8 +141,8 @@ const sharePost = postId => {
 }
 
 .main-content {
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: none;
+  border-right: none;
   min-height: 100vh;
 }
 
@@ -111,6 +150,7 @@ const sharePost = postId => {
   display: flex;
   gap: 12px;
   padding: 16px;
+  align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -123,14 +163,16 @@ const sharePost = postId => {
 
 .create-post-button {
   flex: 1;
-  text-align: left;
-  padding: 8px 16px;
   background: transparent;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--color-text-secondary);
-  font-size: 1.1rem;
-  cursor: pointer;
+  padding: 8px 16px;
   border-radius: 20px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   transition: background-color 0.2s;
 }
 
@@ -185,6 +227,7 @@ const sharePost = postId => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 12px;
 }
 
 .suggested-item {
@@ -210,26 +253,25 @@ const sharePost = postId => {
 .suggested-name {
   color: var(--color-text);
   font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .suggested-game {
   color: var(--color-text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
-.follow-button {
-  background: var(--color-primary);
-  color: white;
-  border: none;
+.button {
   padding: 6px 16px;
-  border-radius: 20px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  font-size: 0.85rem;
+  min-width: 90px;
+  justify-content: center;
 }
 
-.follow-button:hover {
-  background: var(--color-primary-hover);
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 @media (max-width: 1280px) {

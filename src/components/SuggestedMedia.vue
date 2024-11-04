@@ -8,7 +8,7 @@
         @click="prevSlide"
         :disabled="currentIndex === 0"
       >
-        <i class="fas fa-chevron-left"></i>
+        <ChevronLeft />
       </button>
 
       <div class="media-container" ref="container">
@@ -43,7 +43,7 @@
         @click="nextSlide"
         :disabled="currentIndex >= suggestedMedia.length - 1"
       >
-        <i class="fas fa-chevron-right"></i>
+        <ChevronRight />
       </button>
     </div>
 
@@ -61,6 +61,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
 const currentIndex = ref(0)
 const container = ref(null)

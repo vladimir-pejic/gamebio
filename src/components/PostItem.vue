@@ -1,16 +1,11 @@
 <template>
   <div class="post-card">
     <div class="post-header">
-      <img :src="post.authorAvatar" class="author-avatar" alt="Author" />
+      <img :src="post.authorAvatar" alt="Avatar" class="author-avatar" />
       <div class="post-meta">
-        <router-link :to="`/profile/${post.authorId}`" class="author-name">
-          {{ post.authorName }}
-        </router-link>
-        <span class="post-time">{{ formatTime(post.timestamp) }}</span>
+        <div class="author-name">{{ post.authorName }}</div>
+        <div class="post-time">{{ formatTime(post.timestamp) }}</div>
       </div>
-      <button class="more-options">
-        <i class="fas fa-ellipsis-h"></i>
-      </button>
     </div>
 
     <div class="post-content">
@@ -18,41 +13,36 @@
       <img
         v-if="post.image"
         :src="post.image"
-        class="post-image"
         alt="Post image"
-        @click="openImagePreview"
+        class="post-image"
       />
     </div>
 
     <div class="post-actions">
       <button
-        class="action-button"
+        class="action-button button button-secondary"
         :class="{ liked: post.liked }"
-        @click="$emit('like', post.id)"
+        @click="handleLike"
       >
-        <i class="fas" :class="post.liked ? 'fa-heart' : 'fa-heart-o'"></i>
-        <span>{{ post.likes }}</span>
+        <Heart :fill="post.liked ? 'currentColor' : 'none'" />
+        {{ post.likes }}
       </button>
 
-      <button class="action-button" @click="$emit('comment', post.id)">
-        <i class="far fa-comment"></i>
-        <span>{{ post.comments?.length || 0 }}</span>
+      <button class="action-button button button-secondary">
+        <MessageCircle />
+        {{ post.comments }}
       </button>
 
-      <button class="action-button" @click="$emit('share', post.id)">
-        <i class="fas fa-share"></i>
-        <span>Share</span>
+      <button class="action-button button button-secondary">
+        <Share2 />
+        Share
       </button>
-    </div>
-
-    <div v-if="post.comments?.length" class="comments-section">
-      <!-- Comments implementation -->
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { Heart, MessageCircle, Share2 } from 'lucide-vue-next'
 
 const props = defineProps({
   post: {
@@ -61,207 +51,109 @@ const props = defineProps({
   },
 })
 
-defineEmits(['like', 'comment', 'share'])
-
 const formatTime = timestamp => {
   const date = new Date(timestamp)
   const now = new Date()
-  const diff = (now - date) / 1000 // difference in seconds
+  const diff = now - date
 
-  if (diff < 60) {
-    return 'Just now'
-  } else if (diff < 3600) {
-    const minutes = Math.floor(diff / 60)
+  // Convert milliseconds to minutes, hours, etc.
+  const minutes = Math.floor(diff / 60000)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (minutes < 1) {
+    return 'just now'
+  } else if (minutes < 60) {
     return `${minutes}m ago`
-  } else if (diff < 86400) {
-    const hours = Math.floor(diff / 3600)
+  } else if (hours < 24) {
     return `${hours}h ago`
-  } else if (diff < 604800) {
-    const days = Math.floor(diff / 86400)
+  } else if (days < 7) {
     return `${days}d ago`
   } else {
     return date.toLocaleDateString()
   }
 }
 
-const openImagePreview = () => {
-  // Implement image preview functionality
+const handleLike = () => {
+  // Implement like functionality
 }
 </script>
 
 <style scoped>
 .post-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-background-secondary);
   border-radius: 16px;
-  overflow: hidden;
-  transition: transform 0.2s ease;
-}
-
-.post-card:hover {
-  transform: translateY(-2px);
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .post-header {
   display: flex;
   align-items: center;
-  padding: 16px;
   gap: 12px;
+  margin-bottom: 12px;
 }
 
 .author-avatar {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #6d28d9;
 }
 
 .post-meta {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .author-name {
-  color: #ffffff;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.author-name:hover {
-  color: #6d28d9;
+  font-weight: 500;
+  color: var(--color-text);
 }
 
 .post-time {
-  color: #9ca3af;
   font-size: 0.9rem;
-}
-
-.more-options {
-  background: none;
-  border: none;
-  color: #9ca3af;
-  padding: 8px;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: background-color 0.2s;
-}
-
-.more-options:hover {
-  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-secondary);
 }
 
 .post-content {
-  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .post-text {
-  color: #ffffff;
-  font-size: 1rem;
-  line-height: 1.5;
-  margin-bottom: 16px;
   white-space: pre-wrap;
+  line-height: 1.5;
 }
 
 .post-image {
   width: 100%;
-  max-height: 500px;
-  object-fit: cover;
   border-radius: 12px;
-  margin-bottom: 16px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.post-image:hover {
-  opacity: 0.9;
+  max-height: 400px;
+  object-fit: cover;
 }
 
 .post-actions {
   display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 12px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .action-button {
-  display: flex;
+  padding: 8px 16px;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: none;
-  border: none;
-  color: #9ca3af;
-  font-size: 0.95rem;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
-
-.action-button:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  font-size: 0.9rem;
 }
 
 .action-button.liked {
   color: #ec4899;
 }
 
-.action-button.liked:hover {
-  background: rgba(236, 72, 153, 0.1);
-}
-
-.action-button i {
-  font-size: 1.2rem;
-}
-
-.comments-section {
-  padding: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Animation for like button */
-@keyframes likeAnimation {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.action-button.liked i {
-  animation: likeAnimation 0.3s ease;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .post-card {
-    border-radius: 0;
-  }
-
-  .post-header {
-    padding: 12px;
-  }
-
-  .author-avatar {
-    width: 40px;
-    height: 40px;
-  }
-
-  .post-content {
-    padding: 0 12px;
-  }
-
-  .post-actions {
-    padding: 12px;
-  }
+.action-button:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 </style>

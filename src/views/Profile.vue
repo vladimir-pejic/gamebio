@@ -24,18 +24,21 @@
         <div class="profile-actions">
           <template v-if="!isOwnProfile">
             <button
-              class="action-button follow"
+              class="action-button button button-primary"
               :class="{ following: isFollowing }"
               @click="toggleFollow"
             >
+              <UserPlus v-if="!isFollowing" />
+              <UserCheck v-else />
               {{ isFollowing ? 'Following' : 'Follow' }}
             </button>
-            <button class="action-button message" @click="openMessages">
-              <i class="far fa-envelope"></i>
+            <button class="action-button button button-secondary">
+              <Mail />
               Message
             </button>
           </template>
-          <button v-else class="action-button edit" @click="editProfile">
+          <button v-else class="action-button button button-secondary">
+            <Settings />
             Edit Profile
           </button>
         </div>
@@ -83,6 +86,7 @@
 import { computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+import { UserPlus, UserCheck, Mail, Settings } from 'lucide-vue-next'
 
 const store = useStore()
 const route = useRoute()
@@ -238,41 +242,13 @@ const editProfile = () => {
 }
 
 .action-button {
-  padding: 8px 20px;
-  border-radius: 20px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
+  min-width: 120px;
 }
 
-.action-button.follow {
-  background: var(--color-primary);
-  color: white;
-  border: none;
-}
-
-.action-button.follow:hover {
-  background: var(--color-primary-hover);
-}
-
-.action-button.message {
-  background: transparent;
+.action-button.following {
+  background: var(--color-background-secondary);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--color-text);
-}
-
-.action-button.message:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.action-button.edit {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--color-text);
-}
-
-.action-button.edit:hover {
-  background: rgba(255, 255, 255, 0.05);
 }
 
 @media (max-width: 688px) {
